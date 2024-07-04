@@ -18,14 +18,10 @@
 
   <distributionManagement>
     <repository>
-      <id>ossrh</id>
-        <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
-    </repository>
-    <snapshotRepository>
       <id>github</id>
       <name>GitHub Ismael-Jim Apache Maven Packages</name>
       <url>https://maven.pkg.github.com/Ismael-Jim/alke_project</url>
-    </snapshotRepository>
+    </repository>
   </distributionManagement>
 
   <repositories>
@@ -133,7 +129,7 @@
         <artifactId>maven-compiler-plugin</artifactId>
         <version>3.13.0</version>
         <configuration>
-          <release>8</release>
+          <release>22</release>
           <compilerArgs>
             <arg>-Xlint:-options</arg>
           </compilerArgs>
