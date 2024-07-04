@@ -1,0 +1,33 @@
+package AlkeWalletM5.Repositories;
+
+import AlkeWalletM5.models.Usuario;
+import AlkeWalletM5.Util.ConexionBaseDatos;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+
+public class UsuarioRepositoryImpl implements UsuarioRepository {
+    @Override
+    public Usuario findByCorreoAndPassword(String correo, String password) {
+        Usuario usuario = null;
+        try (Connection conn = ConexionBaseDatos.getConnection()) {
+            String sql = "SELECT * FROM USUARIO WHERE correo = ? AND contrasena = ?";
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            stmt.setString(1, correo);
+            stmt.setString(2, password);
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                usuario = new Usuario();
+                usuario.setUsuarioId(rs.getString("usuario_id"));
+                usuario.setNombre(rs.getString("nombre"));
+                usuario.setCorreo(rs.getString("correo"));
+                usuario.setContrasena(rs.getString("contrasena"));
+                usuario.setSaldo(rs.getInt("saldo"));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return usuario;
+    }
+}
