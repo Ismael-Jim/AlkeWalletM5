@@ -1,33 +1,52 @@
 package AlkeWalletM5.Repositories;
 
+import AlkeWalletM5.Services.UsuarioServiceImpl;
 import AlkeWalletM5.models.Usuario;
-import AlkeWalletM5.Util.ConexionBaseDatos;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
+import java.util.Optional;
 
-public class UsuarioRepositoryImpl implements UsuarioRepository {
-    @Override
-    public Usuario findByCorreoAndPassword(String correo, String password) {
-        Usuario usuario = null;
-        try (Connection conn = ConexionBaseDatos.getConnection()) {
-            String sql = "SELECT * FROM USUARIO WHERE correo = ? AND contrasena = ?";
-            PreparedStatement stmt = conn.prepareStatement(sql);
-            stmt.setString(1, correo);
-            stmt.setString(2, password);
-            ResultSet rs = stmt.executeQuery();
-            if (rs.next()) {
-                usuario = new Usuario();
-                usuario.setUsuarioId(rs.getString("usuario_id"));
-                usuario.setNombre(rs.getString("nombre"));
-                usuario.setCorreo(rs.getString("correo"));
-                usuario.setContrasena(rs.getString("contrasena"));
-                usuario.setSaldo(rs.getInt("saldo"));
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return usuario;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.*;
+
+class UsuarioServiceTest {
+
+    @Mock
+    private UsuarioRepository usuarioRepository;
+
+    @InjectMocks
+    private UsuarioServiceImpl usuarioService; // Usando la implementación concreta
+
+    @BeforeEach
+    public void setUp() {
+        MockitoAnnotations.openMocks(this);
     }
+
+    @Test
+    public void testGetUsuarioById() {
+        // Arrange
+        String usuarioId = "1";
+        Usuario mockUsuario = new Usuario();
+        mockUsuario.setUsuarioId(usuarioId);
+        mockUsuario.setNombre("Test User");
+
+        // Configurar comportamiento del mock
+        when(usuarioRepository.getUsuarioById(usuarioId)).thenReturn(Optional.of(mockUsuario));
+
+        // Act
+        Usuario resultUsuario = usuarioService.getUsuarioById(usuarioId);
+
+        // Assert
+        assertEquals(usuarioId, resultUsuario.getUsuarioId());
+        assertEquals("Test User", resultUsuario.getNombre());
+
+        // Verify
+        verify(usuarioRepository, times(1)).getUsuarioById(usuarioId);
+    }
+
+    // Agregar más pruebas según las funcionalidades de UsuarioService
 }
